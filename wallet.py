@@ -3,6 +3,8 @@
 """
 
 from cryptography.hazmat.primitives.asymmetric import ec
+from cryptography.hazmat.primitives.serialization import Encoding
+from cryptography.hazmat.primitives.serialization import PublicFormat
 import os
 import copy
 import other
@@ -23,7 +25,7 @@ class Wallet:
         originRandom = int.from_bytes(os.urandom(16),'big')
         self.data={originRandom:UTXO(originRandom,0)}
         self.Random = [originRandom]
-        self.ID = ec.generate_private_key(self.curve).public_key().public_bytes().hex()
+        self.ID = ec.generate_private_key(self.curve).public_key().public_bytes(Encoding.X962,PublicFormat.UncompressedPoint).hex()
     def generateUTXO(self,cash=0):
         """
         生成一对UTXO并添加到钱包的序列中,余额默认为0
@@ -60,4 +62,5 @@ wallet = Wallet()
 wallet.generateUTXO(10)
 wallet.generateUTXO(20)
 wallet.generateUTXO(2.5)
+wallet.trans(100)
 wallet.show()
